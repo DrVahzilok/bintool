@@ -2,6 +2,11 @@
 
 ## A very hacky tool to unpack CoX packed bins and such.
 
+## Setup:
+
+Just needs nim and vs2008 in my case.
+You definitely need to edit in `bintool.nim` the `passC` and `passL` to fit your build includes/libs, vc version.
+
 ## How to add a new `.bin`:
 
 Run the command without any options, just the bin file you wanna extract, to dump file list
@@ -79,12 +84,14 @@ ParticleInfoList {.importc: "ParticleInfoList", pure.} = object
 we add a member to this type, nim internally doesn't care that the struct is not complete btw, this is just sugar.
 
 
-### Known issues
+## Known issues
 
 Nim compiler might freeze if some C related error happens,
 in such case check `cache` folder for `bintool.c`, copy paste the actual full compiler command line and run that manually, should reveal the actual c compiler error.
 
-#### `missionspec.c` modifications
+## Source modifications I did (might have missed some)
+
+### `missionspec.c` modifications
 ```
 diff --git a/MapServer/storyarc/missionspec.c b/MapServer/storyarc/missionspec.c
 index 4570d70..e1d5d89 100644
@@ -102,7 +109,7 @@ index 4570d70..e1d5d89 100644
  };
  ```
 
- #### Generally I run with this, but might not be needed depending on your branch:
+ ### Generally I run with this, but might not be needed depending on your branch:
  ```
  diff --git a/libs/UtilitiesLib/utils/file.c b/libs/UtilitiesLib/utils/file.c
 index da47d08..bce0da5 100644
@@ -119,7 +126,7 @@ index da47d08..bce0da5 100644
  {
 ```
 
-#### Textparser definitely needs this fix also:
+### Textparser definitely needs this fix also:
 ```
 diff --git a/libs/UtilitiesLib/utils/textparser.c b/libs/UtilitiesLib/utils/textparser.c
 index 6f40b21..b83fb49 100644
@@ -135,7 +142,7 @@ index 6f40b21..b83fb49 100644
  void vec3_applydynop(ParseTable tpi[], int column, void* dstStruct, void* srcStruct, int index, DynOpType optype, const F32* values, U8 uiValuesSpecd, U32* seed)
 ```
 
-#### Might need to mute translation errors too:
+### Might need to mute translation errors too:
 ```
 diff --git a/libs/UtilitiesLib/language/MessageStore.c b/libs/UtilitiesLib/language/MessageStore.c
 index 6ec78a8..74fc9f5 100644
